@@ -31,3 +31,30 @@ select count(policynumber), policynumber from table group by policynumber having
 
 /* search policynumber that not in another table */
 select * from table A where policynumber not in (select policy_id from table B);
+
+/* Join Table where clause */
+select * from tableA A
+left join tableB B on
+A.store_code=B.store_code
+where (a.created_date > to_date('20/12/2021','dd/mm/yyyy') and
+a.created_date <= to_date('31/12/2021','dd/mm/yyyy')) and
+a.store_code is not null and
+a.policy_imei in ('1','2','3')
+;
+
+----------------------------------------  2nd Job 
+
+/* First time charge */
+select servicecontractnumber,ordernumber,timestamp,orderstatus from table
+where timestamp < to_date('01/02/2021','dd/mm/yyyy')
+order by servicecontractnumber,timestamp;
+
+/* Calculate month of difference first charge till now vs the actual count */
+select servicecontractnumber, min(timestamp), max(timestamp), (round(months_between(current_timestamp,min(timestamp)))+1) as diff_first_last_mth ,count(timestamp) from table
+group by servicecontractnumber;
+
+/* Based on 4/1/22 till 4/2/22 (Last time charge) */
+select servicecontractnumber,ordernumber,timestamp,orderstatus from table
+where timestamp >= to_date('04/01/2022','dd/mm/yyyy') and
+timestamp < to_date('04/02/2022','dd/mm/yyyy')
+order by servicecontractnumber,timestamp;
