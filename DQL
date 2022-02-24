@@ -1,0 +1,33 @@
+/* Addition */
+select policy_rrp + policy_tp from table;
+select policy_rrp,policy_tp,(policy_rrp+policy_tp) as TotalAccount from table;
+
+/* top 10 policy_rrp */
+select * from table where policy_rrp is not null order by policy_rrp desc fetch next 10 rows only;
+
+/* According custom order */
+select cust_countrycode,count(*) from table group by cust_countrycode 
+order by decode(cust_countrycode,'VN',1,'HK',2,'ID',3,'MY',4,'PH',5,'TW',6,'TH',7);
+
+/* Limit one row */
+select * from table A where rownum=1
+union all 
+select * from table B where rownum=1
+;
+
+/* search imei result where salesrep_id not null */
+select * from table A where imei in 
+('1','2') and sales_rep_id is not null
+union all
+select * from table B where imei in 
+('1','2') and sales_rep_id is not null
+union all 
+select * from table C where imei in 
+('1','2') and sales_rep_id is not null
+;
+
+/* search policynumber that have more than 1 */
+select count(policynumber), policynumber from table group by policynumber having count(policynumber)>1;
+
+/* search policynumber that not in another table */
+select * from table A where policynumber not in (select policy_id from table B);
