@@ -42,7 +42,7 @@ a.store_code is not null and
 a.policy_imei in ('1','2','3')
 ;
 
-----------------------------------------  2nd Job 
+----------------------------------------  2nd
 
 /* First time charge */
 select servicecontractnumber,ordernumber,timestamp,orderstatus from table
