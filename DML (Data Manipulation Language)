@@ -17,3 +17,13 @@ WHERE rowid not in
 FROM STG_CRON_LIST
 GROUP BY CRON, CRONMI, CRONHH, MYTIME,INSERT_DATE)
 ;
+
+/* INSTR */
+UPDATE STG_CRON_LIST
+SET TYPE = 
+case 
+    when INSTR(CRON,'claims',1)>0 then 'CLAIMS'
+    when INSTR(upper(CRON),'SMARTSHEET',1)>0 then 'SMARTSHEET'
+end    
+where INSERT_DATE =  TRUNC(SYSDATE)
+;
