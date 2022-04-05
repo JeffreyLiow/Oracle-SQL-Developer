@@ -144,23 +144,36 @@ select trunc(sysdate, 'yyyy') - interval '4' year from dual; -- 01/01/2018
 select trunc(sysdate, 'yyyy') - interval '2' month from dual; -- 01/11/2021
 select trunc(sysdate, 'yyyy') - interval '1' day from dual; -- 31/12/2021
 select trunc(sysdate, 'dd') from dual; -- 10/03/2022
-select trunc(sysdate, 'mm') from dual; -- 01/03/2022
+select trunc(sysdate, 'mm') from dual
+; -- 01/03/2022
 
 /* Extract last year data */
-select extract(year from add_months(sysdate,-12)) y2 from dual; -- 2021
-
-/* INSTR vs LIKE */
-UPDATE TEST
-SET TYPE = 
-case 
-    when INSTR(CRON,'policy',1)>0 then 'POLICY'
-    when CRON like '%policy%' then 'POLICY'
-end    
-where INSERT_DATE =  TRUNC(SYSDATE);
+select extract(year from add_months(sysdate,-12)) y2 from dual
+; -- 2021
 
 /* BETWEEN vs (X< and X>) */
 select QUOTAPARTCOSTS,
 case 
     when QUOTAPARTCOSTS between 4000 and 10000 then '4000-10000'
     when QUOTAPARTCOSTS>10000 and QUOTAPARTCOSTS<700000 then '10000-700000'
-end as segment from dwh.stg_crmz_claims_all;
+end as segment from dwh.stg_crmz_claims_all
+;
+
+/* Delete duplicates */
+DELETE FROM STG_CRON_LIST
+WHERE rowid not in
+(SELECT MIN(rowid)
+FROM STG_CRON_LIST
+GROUP BY CRON, CRONMI, CRONHH, MYTIME,INSERT_DATE)
+;
+
+/* Union with desc with 4th column */
+select extract(year from policy_sold_date) as year,country,product_code,count(product_code),policy_status from dwh.fact_crmz_policy_master_TW 
+where POLICY_STATUS='Active' and POLICY_SOLD_DATE>='01-01-2020' and product_code is not null
+group by country,policy_status,product_code,extract(year from policy_sold_date)
+union
+select extract(year from policy_sold_date) as year,country,product_code,count(product_code),policy_status from dwh.fact_crmz_policy_master_TH 
+where POLICY_STATUS='Active' and POLICY_SOLD_DATE>='01-01-2020' and product_code is not null
+group by country,policy_status,product_code,extract(year from policy_sold_date)
+order by 4 desc
+; -- fourth column order by desc
