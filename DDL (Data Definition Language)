@@ -1,0 +1,15 @@
+: Create, Drop, Alter, Truncate
+
+/* Create view */
+CREATE VIEW vw_drei_issue_7 AS
+select * from dwh.stg_crmz_policy_AT where policystatus='Active' and policyenddate<sysdate;
+
+select * from vw_drei_issue_7;
+
+select * from dwh.stg_crmz_policy_AT where policystatus='Active' and policyenddate<sysdate;
+
+/* Select count from view */
+select count(*) from v1;
+
+/* Drop view */
+drop view v1;
