@@ -1,0 +1,54 @@
+/* Create or replace procedure */
+create or replace procedure add_count
+IS
+CustDate date;
+CustCount integer;
+BEGIN
+CustDate:=sysdate;
+CustCount:=10;
+
+INSERT INTO intern.Count_Cust_Daily values (CustDate,CustCount);
+COMMIT;
+
+DBMS_OUTPUT.PUT_LINE('DATA INSERTED SUCCESSFULLY');
+
+END;
+
+
+/* Open new tab and separate run */
+set serveroutput on;
+/* Run after set serveroutput on */
+begin
+add_count();
+end;
+
+/* Create or replace procedure with 2 or more rows */
+create or replace procedure add_count_stg_fact_policy
+IS
+CoDate date;
+CoCountry varchar2(100);
+CoStg integer;
+CoMaster integer;
+Diff integer;
+BEGIN
+CoDate:=sysdate;
+CoCountry:='VN';
+
+SELECT COUNT(*) INTO CoStg FROM dwh.stg_crmz_policy_vn;
+SELECT COUNT(*) INTO CoMaster FROM dwh.fact_crmz_policy_master_vn;
+Diff:=CoStg-CoMaster;
+INSERT INTO intern.Count_Stg_Master_Daily values (CoDate,CoCountry,CoStg,CoMaster,Diff);
+COMMIT;
+
+CoDate:=sysdate;
+CoCountry:='HK';
+
+SELECT COUNT(*) INTO CoStg FROM dwh.stg_crmz_policy_hk;
+SELECT COUNT(*) INTO CoMaster FROM dwh.fact_crmz_policy_master_hk;
+Diff:=CoStg-CoMaster;
+INSERT INTO intern.Count_Stg_Master_Daily values (CoDate,CoCountry,CoStg,CoMaster,Diff);
+COMMIT;
+
+DBMS_OUTPUT.PUT_LINE('DATA INSERTED SUCCESSFULLY');
+
+END;
