@@ -177,3 +177,20 @@ where POLICY_STATUS='Active' and POLICY_SOLD_DATE>='01-01-2020' and product_code
 group by country,policy_status,product_code,extract(year from policy_sold_date)
 order by 4 desc
 ; -- fourth column order by desc
+
+/* Check date format */
+select distinct "endDate" from dwh.STG_CW_EMR_Subscription_AT order by "endDate";
+select * from dwh.STG_CW_EMR_Subscription_AT where "endDate"='15-02-2022';
+select * from dwh.STG_CW_EMR_Subscription_AT where "endDate"='15-02-2022' or "endDate"='2022-02-15'
+;
+
+/* Count length and extract */
+select "endDate",length("endDate") from dwh.STG_CW_EMR_Subscription_AT order by length("endDate") desc;
+select "endDate",length("endDate") from dwh.STG_CW_EMR_Subs_pay_AT order by length("endDate") desc;
+select extract(month from to_date("endDate",'YYYY-MM-DD')) as month from dwh.STG_CW_EMR_Subscription_AT order by month desc;
+select extract(month from to_date("endDate",'YYYY-MM-DD')) as month from DWH.stg_cw_emr_subs_pay_at order by month desc
+;
+
+/* Date difference */
+select round(creationdate - policypurchasedate,0) from dwh.stg_crmz_policy_id
+;
