@@ -13,3 +13,6 @@ select count(*) from v1;
 
 /* Drop view */
 drop view v1;
+
+/* Change schema */
+alter session set current_schema = intern;
