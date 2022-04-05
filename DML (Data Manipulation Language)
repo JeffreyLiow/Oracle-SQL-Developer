@@ -1,0 +1,14 @@
+/* INSTR vs LIKE */
+UPDATE TEST
+SET TYPE = 
+case 
+    when INSTR(CRON,'policy',1)>0 then 'POLICY'
+    when CRON like '%policy%' then 'POLICY'
+end    
+where INSERT_DATE =  TRUNC(SYSDATE)
+;
+
+/* change schema */
+alter session set current_schema = intern
+;
+
