@@ -1,3 +1,5 @@
+: Insert, Update, Delete
+
 /* INSTR vs LIKE */
 UPDATE TEST
 SET TYPE = 
@@ -6,9 +8,5 @@ case
     when CRON like '%policy%' then 'POLICY'
 end    
 where INSERT_DATE =  TRUNC(SYSDATE)
-;
-
-/* change schema */
-alter session set current_schema = intern
 ;
 
