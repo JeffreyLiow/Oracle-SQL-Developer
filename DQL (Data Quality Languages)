@@ -42,8 +42,6 @@ a.store_code is not null and
 a.policy_imei in ('1','2','3')
 ;
 
-----------------------------------------  2nd
-
 /* First time charge */
 select servicecontractnumber,ordernumber,timestamp,orderstatus from table
 where timestamp < to_date('01/02/2021','dd/mm/yyyy')
@@ -58,3 +56,4 @@ select servicecontractnumber,ordernumber,timestamp,orderstatus from table
 where timestamp >= to_date('04/01/2022','dd/mm/yyyy') and
 timestamp < to_date('04/02/2022','dd/mm/yyyy')
 order by servicecontractnumber,timestamp;
+
