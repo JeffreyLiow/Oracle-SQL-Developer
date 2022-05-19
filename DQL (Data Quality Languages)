@@ -194,3 +194,46 @@ select extract(month from to_date("endDate",'YYYY-MM-DD')) as month from DWH.stg
 /* Date difference */
 select round(creationdate - policypurchasedate,0) from dwh.stg_crmz_policy_id
 ;
+
+/* Find last month data (010322-310322) with sysdate | today (220422) */
+select * from dwh.fact_crmz_policy_master_VN
+where POLICY_STATUS='Active' and policy_sold_date between trunc(add_months(sysdate,-1),'mm') and last_day(add_months(sysdate,-1))
+order by policy_sold_date
+;
+
+/* With (CTE) extract customer ID with many policies */
+with duplicate_cust_id as (
+select CUST_ID,count(*) from dwh.stg_crmz_policy_my
+group by CUST_ID
+having count(*)> 1)
+select CUST_ID,POLICYNUMBER,PRODUCT_CODE from dwh.stg_crmz_policy_my
+where CUST_ID in (select CUST_ID from duplicate_cust_id)
+order by CUST_ID asc;
+vs
+select CUST_ID,POLICYNUMBER,PRODUCT_CODE from dwh.stg_crmz_policy_my
+where CUST_ID in 
+(select CUST_ID from 
+(select CUST_ID,count(*) from dwh.stg_crmz_policy_my
+group by CUST_ID
+having count(*)> 1))
+order by CUST_ID asc
+;
+
+/* If unable to detect date, force column date and sysdate to_date() */
+select * from dwh.FACT_CRMZ_POLICY_MASTER_MY 
+where client_name='DIGI' and UW_COST is NULL and 
+to_date(created_date,'DD/MM/YYYY')=to_date(sysdate,'DD/MM/YYYY')
+;
+
+/* Row_number() over (partition by XX order by XX) */
+select policy_id,partner_id,client_name,product_code,plan_code,deleted,deletedon,coverage from
+(select policy_id,partner_id,client_name,product_code,plan_code,deleted,deletedon,coverage,country,
+row_number() over (partition by policy_id,plan_code order by deleted) as row_num from cte_join)
+where row_num=1 order by policy_id,deleted
+;
+
+/* '' || '' + SUBSTR('CLUBORACLE',3,2) -> UB + INSTR('Tech on the net', 'e') -> 2 */
+select brand_name,model_na,
+(brand_name || ' ' || nvl(substr(model_name,0,instr(model_name,'(')-1),model_name)) as model_name_test from dwh.tbl_ref_tac 
+where brand_name is not null and upper(brand_name)<> 'NOT KNOWN' and model_name2 is null and brand_name = 'Apple'
+;
