@@ -237,3 +237,7 @@ select brand_name,model_na,
 (brand_name || ' ' || nvl(substr(model_name,0,instr(model_name,'(')-1),model_name)) as model_name_test from dwh.tbl_ref_tac 
 where brand_name is not null and upper(brand_name)<> 'NOT KNOWN' and model_name2 is null and brand_name = 'Apple'
 ;
+nvl(substr(model_name,0,instr(model_name,'(')-1),model_name))= Iphone 13 (1,2,3) -> Iphone 13
+;
+
+
