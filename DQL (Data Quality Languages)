@@ -144,8 +144,8 @@ select trunc(sysdate, 'yyyy') - interval '4' year from dual; -- 01/01/2018
 select trunc(sysdate, 'yyyy') - interval '2' month from dual; -- 01/11/2021
 select trunc(sysdate, 'yyyy') - interval '1' day from dual; -- 31/12/2021
 select trunc(sysdate, 'dd') from dual; -- 10/03/2022
-select trunc(sysdate, 'mm') from dual
-; -- 01/03/2022
+select trunc(sysdate, 'mm') from dual; -- 01/03/2022
+; 
 
 /* Extract last year data */
 select extract(year from add_months(sysdate,-12)) y2 from dual
