@@ -159,14 +159,6 @@ case
 end as segment from dwh.stg_crmz_claims_all
 ;
 
-/* Delete duplicates */
-DELETE FROM STG_CRON_LIST
-WHERE rowid not in
-(SELECT MIN(rowid)
-FROM STG_CRON_LIST
-GROUP BY CRON, CRONMI, CRONHH, MYTIME,INSERT_DATE)
-;
-
 /* Union with desc with 4th column */
 select extract(year from policy_sold_date) as year,country,product_code,count(product_code),policy_status from dwh.fact_crmz_policy_master_TW 
 where POLICY_STATUS='Active' and POLICY_SOLD_DATE>='01-01-2020' and product_code is not null
